@@ -1,0 +1,58 @@
+@import "tailwindcss";
+
+@theme {
+  --color-synapse-50: #eef4ff;
+  --color-synapse-100: #d9e7ff;
+  --color-synapse-200: #bcd5ff;
+  --color-synapse-300: #8eb8ff;
+  --color-synapse-400: #5d91fa;
+  --color-synapse-500: #386df0;
+  --color-synapse-600: #244fd6;
+  --color-synapse-700: #1f3fb0;
+  --color-synapse-800: #20388c;
+  --color-synapse-900: #1f326f;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: #ffffff;
+  color: #111827;
+  font-family: "DM Sans", system-ui, sans-serif;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
