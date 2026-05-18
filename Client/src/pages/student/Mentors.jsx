@@ -1,7 +1,6 @@
 import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { ROUTES } from "../../utils/constants";
+
 
 const DOMAINS = [
   "All",
@@ -13,6 +12,13 @@ const DOMAINS = [
   "Startup",
   "DevOps",
 ];
+
+import {
+  createPaymentOrder,
+  loadRazorpayScript,
+  verifyPayment,
+} from "../../services/paymentService";
+
 
 const MENTORS = [
   {
@@ -134,13 +140,22 @@ const PLANS = [
   },
 ];
 
+function getPlanAmount(planName) {
+  const plan = PLANS.find((item) => item.name === planName);
+
+  if (!plan) return 0;
+
+  return Number(plan.price.replace("₹", "").trim());
+}
+
 export default function Mentors() {
-  const navigate = useNavigate();
-  const { user } = useAuth();
+
+  const { user,profile } = useAuth();
 
   const [search, setSearch] = useState("");
   const [domain, setDomain] = useState("All");
   const [selectedPlan, setSelectedPlan] = useState("Deep Session");
+  const selectedPlanAmount = getPlanAmount(selectedPlan);
 
   const filteredMentors = useMemo(() => {
     return MENTORS.filter((mentor) => {
@@ -158,28 +173,90 @@ export default function Mentors() {
     });
   }, [search, domain]);
 
-  function handleBookSession(mentor) {
-    if (!user) {
-      navigate(ROUTES.LOGIN, {
-        state: {
-          redirectTo: ROUTES.MENTORS,
-        },
-      });
+async function handleBookSession(mentor) {
+  const amount = getPlanAmount(selectedPlan);
+
+  if (!amount || Number.isNaN(amount)) {
+    alert("Invalid payment amount.");
+    return;
+  }
+
+  try {
+    const isLoaded = await loadRazorpayScript();
+
+    if (!isLoaded) {
+      alert("Razorpay SDK failed to load. Check your internet connection.");
       return;
     }
 
-    console.log("Book paid mentor session:", {
+    const selectedPlanData = PLANS.find((plan) => plan.name === selectedPlan);
+
+    const amount =
+      selectedPlanData?.price?.replace("₹", "").trim() || mentor.price;
+
+    const orderData = await createPaymentOrder({
+      userId: user.id,
+      amount,
+      purpose: "mentor_booking",
       mentorId: mentor.id,
-      selectedPlan,
-      price: mentor.price,
+      mentorName: mentor.name,
+      planName: selectedPlan,
     });
+
+    const options = {
+      key: orderData.keyId,
+      amount: orderData.order.amount,
+      currency: orderData.order.currency,
+      name: "Synapse",
+      description: `${selectedPlan} with ${mentor.name}`,
+      order_id: orderData.order.id,
+
+      handler: async function (response) {
+        try {
+          const verification = await verifyPayment({
+            userId: user.id,
+            mentorId: mentor.id,
+            mentorName: mentor.name,
+            planName: selectedPlan,
+            amount: Number(amount),
+            paymentRecordId: orderData.paymentRecord.id,
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
+
+          alert("Payment successful. Mentor session booked.");
+
+          console.log("Payment verification:", verification);
+        } catch (error) {
+          console.error("Payment verification failed:", error);
+          alert(error.message || "Payment verification failed.");
+        }
+      },
+
+      prefill: {
+        name: profile?.full_name || "",
+        email: user.email || "",
+      },
+
+      theme: {
+        color: "#111827",
+      },
+    };
+
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+  } catch (error) {
+    console.error("Payment error:", error);
+    alert(error.message || "Payment failed.");
   }
+}
 
   return (
     <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
       {/* Hero */}
       <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="mx-auto w-full max-w-340 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
           <div className="grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
             <div className="min-w-0 rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
               <p className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white/80 ring-1 ring-white/10">
@@ -250,7 +327,7 @@ export default function Mentors() {
       </section>
 
       {/* Plans */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-340 px-4 py-10 sm:px-6 lg:px-8">
         <div className="mb-6">
           <p className="text-sm font-black uppercase tracking-[0.2em] text-synapse-700">
             Pricing
@@ -273,7 +350,7 @@ export default function Mentors() {
       </section>
 
       {/* Search */}
-      <section className="mx-auto w-full max-w-7xl px-4 pb-8 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-340 px-4 pb-8 sm:px-6 lg:px-8">
         <div className="rounded-4xl border border-gray-100 bg-white p-5 shadow-sm">
           <div className="grid gap-4 lg:grid-cols-[1fr_240px]">
             <div>
@@ -328,7 +405,7 @@ export default function Mentors() {
       </section>
 
       {/* Mentors */}
-      <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
+      <section className="mx-auto grid w-full max-w-340 gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
         <div className="min-w-0">
           <div className="mb-6 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
             <div>
@@ -352,6 +429,7 @@ export default function Mentors() {
                 key={mentor.id}
                 mentor={mentor}
                 selectedPlan={selectedPlan}
+                selectedPlanAmount={selectedPlanAmount}
                 onBook={() => handleBookSession(mentor)}
               />
             ))}
@@ -461,7 +539,7 @@ function PricingCard({ plan, selected, onSelect }) {
   );
 }
 
-function MentorCard({ mentor, selectedPlan, onBook }) {
+function MentorCard({ mentor, selectedPlan,selectedPlanAmount, onBook }) {
   return (
     <article className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="flex items-start justify-between gap-4">
@@ -506,7 +584,7 @@ function MentorCard({ mentor, selectedPlan, onBook }) {
       </div>
 
       <div className="mt-6 grid grid-cols-3 gap-3">
-        <InfoBox label="Price" value={`₹${mentor.price}`} />
+        <InfoBox label="selected plan" value={`₹${selectedPlanAmount}`} />
         <InfoBox label="Time" value={mentor.duration} />
         <InfoBox label="Sessions" value={mentor.sessions} />
       </div>

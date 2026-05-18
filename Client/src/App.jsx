@@ -1,10 +1,4 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-  Outlet,
-} from "react-router-dom";
+import {BrowserRouter,Routes,Route,Navigate,Outlet,} from "react-router-dom";
 
 import { AuthProvider } from "./context/AuthContext";
 import { useAuth } from "./context/useAuth";
@@ -28,6 +22,7 @@ import Judging from "./pages/organiser/Judging";
 import Analytics from "./pages/organiser/Analytics";
 
 import Home from "./pages/public/Home";
+import HostHackathon from "./pages/public/HostHackathon";
 
 import Login from "./pages/auth/Login";
 import Register from "./pages/auth/Register";
@@ -66,6 +61,7 @@ function WebLayout() {
   return (
     <>
       <Header />
+      <div className="h-16" />
       <Outlet />
     </>
   );
@@ -73,50 +69,51 @@ function WebLayout() {
 
 function AppRoutes() {
   return (
-      <Routes>
-        {/* Public landing page */}
-        <Route path={ROUTES.HOME} element={<Home />} />
-
-        {/* Public explore pages */}
+    <Routes>
+      {/* Public landing page */}
+      <Route path={ROUTES.HOME} element={<Home />} />
+      
+      {/* Public explore pages */}
+      <Route element={<WebLayout />}>
+        <Route path={ROUTES.EXPLORE} element={<Explore />} />
+        <Route path={ROUTES.HACKATHON_DETAIL} element={<HackathonDetail />} />
+        <Route path={ROUTES.HOST_HACKATHON} element={<HostHackathon />} />
+      </Route>
+      
+      {/* Auth pages */}
+      <Route element={<PublicRoute />}>
+        <Route path={ROUTES.LOGIN} element={<Login />} />
+        <Route path={ROUTES.REGISTER} element={<Register />} />
+        <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
+        <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmail />} />
+      </Route>
+      
+      {/* Protected student pages */}
+      <Route element={<PrivateRoute />}>
         <Route element={<WebLayout />}>
-          <Route path={ROUTES.EXPLORE} element={<Explore />} />
-          <Route path={ROUTES.HACKATHON_DETAIL} element={<HackathonDetail />} />
+          <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
+          <Route path={ROUTES.TEAMS} element={<Teams />} />
+          <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
+          <Route path={ROUTES.PROFILE} element={<Profile />} />
+          <Route path={ROUTES.MENTORS} element={<Mentors />} />
+          <Route path={ROUTES.SUBMISSION} element={<Submission />} />
+          <Route path={ROUTES.POST_HACKATHON} element={<PostHackathon />} />
         </Route>
-
-        {/* Auth pages */}
-        <Route element={<PublicRoute />}>
-          <Route path={ROUTES.LOGIN} element={<Login />} />
-          <Route path={ROUTES.REGISTER} element={<Register />} />
-          <Route path={ROUTES.FORGOT_PASSWORD} element={<ForgotPassword />} />
-          <Route path={ROUTES.VERIFY_EMAIL} element={<VerifyEmail />} />
+      </Route>
+      
+      {/* Protected organiser pages */}
+      <Route element={<PrivateRoute allowedRoles={["organiser"]} />}>
+        <Route element={<WebLayout />}>
+          <Route path={ROUTES.ORG_DASHBOARD} element={<OrgDashboard />} />
+          <Route path={ROUTES.ORG_CREATE} element={<CreateHackathon />} />
+          <Route path={ROUTES.ORG_MANAGE} element={<ManageHackathon />} />
+          <Route path={ROUTES.ORG_JUDGING} element={<Judging />} />
+          <Route path={ROUTES.ORG_ANALYTICS} element={<Analytics />} />
         </Route>
-
-        {/* Protected student pages */}
-        <Route element={<PrivateRoute />}>
-          <Route element={<WebLayout />}>
-            <Route path={ROUTES.DASHBOARD} element={<Dashboard />} />
-            <Route path={ROUTES.TEAMS} element={<Teams />} />
-            <Route path={ROUTES.NOTIFICATIONS} element={<Notifications />} />
-            <Route path={ROUTES.PROFILE} element={<Profile />} />
-            <Route path={ROUTES.MENTORS} element={<Mentors />} />
-            <Route path={ROUTES.SUBMISSION} element={<Submission />} />
-            <Route path={ROUTES.POST_HACKATHON} element={<PostHackathon />} />
-          </Route>
-        </Route>
-
-        {/* Protected organiser pages */}
-        <Route element={<PrivateRoute allowedRoles={["organiser"]} />}>
-          <Route element={<WebLayout />}>
-            <Route path={ROUTES.ORG_DASHBOARD} element={<OrgDashboard />} />
-            <Route path={ROUTES.ORG_CREATE} element={<CreateHackathon />} />
-            <Route path={ROUTES.ORG_MANAGE} element={<ManageHackathon />} />
-            <Route path={ROUTES.ORG_JUDGING} element={<Judging />} />
-            <Route path={ROUTES.ORG_ANALYTICS} element={<Analytics />} />
-          </Route>
-        </Route>
-
-        <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
-      </Routes>
+      </Route>
+      
+      <Route path="*" element={<Navigate to={ROUTES.HOME} replace />} />
+    </Routes>
   );
 }
 

@@ -38,6 +38,8 @@ export const ROUTES = {
     ORG_MANAGE: "/org/manage/:id",
     ORG_JUDGING: "/org/judging/:id",
     ORG_ANALYTICS: "/org/analytics/:id",
+
+    HOST_HACKATHON: "/host-hackathon",
 };
 export const SKILL_OPTIONS = [
     'React', 'Vue', 'Angular', 'Next.js',

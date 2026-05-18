@@ -144,7 +144,7 @@ export default function Teams() {
     <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
       {/* Hero */}
       <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="mx-auto w-full max-w-340 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
           <div className="grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div className="min-w-0 rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
               <p className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white/80 ring-1 ring-white/10">
@@ -214,7 +214,7 @@ export default function Teams() {
       </section>
 
       {/* Search */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8">
         <div className="rounded-4xl border border-gray-100 bg-white p-5 shadow-sm">
           <div className="grid gap-4 lg:grid-cols-[1fr_220px]">
             <div>
@@ -269,7 +269,7 @@ export default function Teams() {
       </section>
 
       {/* Main content */}
-      <section className="mx-auto grid w-full max-w-7xl gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
+      <section className="mx-auto grid w-full max-w-340 gap-8 px-4 pb-20 sm:px-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
         <div className="min-w-0 space-y-8">
           {/* AI Matches */}
           <section>

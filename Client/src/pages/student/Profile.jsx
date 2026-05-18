@@ -209,7 +209,7 @@ async function handleSave(e) {
     <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
       {/* Hero */}
       <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+        <div className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
           <div className="grid w-full min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
             <div className="min-w-0 rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
               <div className="flex flex-col gap-6 md:flex-row md:items-center">
@@ -293,7 +293,7 @@ async function handleSave(e) {
       </section>
 
       {/* Content */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8">
         {message && (
           <div className="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-700">
             {message}

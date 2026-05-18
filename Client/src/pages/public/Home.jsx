@@ -89,7 +89,7 @@ export default function Home() {
           <div className="absolute right-10 top-10 h-72 w-72 rounded-full bg-blue-400/20 blur-3xl" />
         </div>
 
-        <div className="relative mx-auto grid min-h-140 w-full max-w-7xl grid-cols-1 items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div className="relative mx-auto grid min-h-140 w-full max-w-340 grid-cols-1 items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
           <div className="text-left">
             <p className="mb-4 inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/80 ring-1 ring-white/10">
               AI-powered hackathon management platform
@@ -115,7 +115,7 @@ export default function Home() {
 
               <Link
                 to={ROUTES.REGISTER}
-                className="rounded-2xl border border-white/20 px-6 py-3.5 text-sm font-bold text-white hover:bg-white/10"
+                className="rounded-2xl border border-white/20 px-6 py-3.5 text-sm font-bold text-white hover:bg-white"
               >
                 Create Account
               </Link>
@@ -143,7 +143,7 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-340 px-4 py-16 sm:px-6 lg:px-8">
         <div className="grid gap-6 md:grid-cols-3">
           <FeatureCard
             title="Smart Team Formation"
@@ -162,7 +162,7 @@ export default function Home() {
 
       {/* Recent Hackathons */}
       <section className="w-full bg-gray-50">
-        <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-340 px-4 py-20 sm:px-6 lg:px-8">
           <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
               <p className="text-sm font-black uppercase tracking-[0.2em] text-synapse-700">
@@ -190,7 +190,7 @@ export default function Home() {
       </section>
 
       {/* Developer Spotlight */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
+      <section className="mx-auto w-full max-w-340 px-4 py-20 sm:px-6 lg:px-8">
         <div className="mb-10">
           <p className="text-sm font-black uppercase tracking-[0.2em] text-synapse-700">
             Builder Spotlight
@@ -347,7 +347,7 @@ function DeveloperCard({ developer }) {
         </div>
 
         <div className="mt-6 flex items-center gap-3">
-          <SocialButton label="Instagram" icon="◎" />
+          <SocialButton label="Instagram" icon="" />
           <SocialButton label="X" icon="𝕏" />
           <SocialButton label="GitHub" icon="GH" />
           <SocialButton label="LinkedIn" icon="in" />
@@ -381,7 +381,7 @@ function FeatureCard({ title, description }) {
 function Footer() {
   return (
     <footer className="w-full border-t border-gray-200 bg-[#f3f8f8]">
-      <div className="mx-auto grid w-full max-w-7xl gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:px-8">
+      <div className="mx-auto grid w-full max-w-340 gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:px-8">
         <div>
           <h2 className="max-w-2xl text-5xl font-black leading-tight tracking-tight text-gray-900 sm:text-6xl">
             We love <span className="text-synapse-500">software</span>
@@ -418,8 +418,8 @@ function Footer() {
           <FooterColumn
             title="Community"
             links={[
-              "Organize a hackathon",
-              "Explore hackathons",
+              { label: "Organize a hackathon", to: ROUTES.HOST_HACKATHON },
+              { label: "Explore hackathons", to: ROUTES.EXPLORE },
               "Code of Conduct",
               "Brand Assets",
               "Documentation",
@@ -456,16 +456,30 @@ function FooterColumn({ title, links }) {
       </h3>
 
       <ul className="mt-6 space-y-4">
-        {links.map((link) => (
-          <li key={link}>
-            <a
-              href="#"
-              className="text-lg font-medium text-gray-800 hover:text-synapse-700"
-            >
-              {link}
-            </a>
-          </li>
-        ))}
+        {links.map((item) => {
+          const link =
+            typeof item === "string" ? { label: item, href: "#" } : item;
+
+          return (
+            <li key={link.label}>
+              {link.to ? (
+                <Link
+                  to={link.to}
+                  className="text-lg font-medium text-gray-800 hover:text-synapse-700"
+                >
+                  {link.label}
+                </Link>
+              ) : (
+                <a
+                  href={link.href || "#"}
+                  className="text-lg font-medium text-gray-800 hover:text-synapse-700"
+                >
+                  {link.label}
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
     </div>
   );

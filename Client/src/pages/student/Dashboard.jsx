@@ -106,7 +106,7 @@ export default function Dashboard() {
     <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
       {/* Top Hero */}
       <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
+        <div className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
           <div className="grid w-full min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_340px] x1:grid-cols-[minmax(0,1fr)_360px]">
             <div className="min-w-0 rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
               <div className="flex flex-col justify-between gap-8 md:flex-row md:items-start">
@@ -127,7 +127,15 @@ export default function Dashboard() {
 
                 <div className="flex items-center gap-4 rounded-3xl bg-white/10 p-4 ring-1 ring-white/10">
                   <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white text-xl font-black text-synapse-700">
-                    {avatarLetter}
+                    {profile?.avatar_url ? (
+                      <img
+                        src={profile?.avatar_url}
+                        alt={displayName}
+                        className="h-full w-full object-cover"
+                      />
+                    ) : (
+                        avatarLetter
+                      ) }
                   </div>
 
                   <div>
@@ -195,7 +203,7 @@ export default function Dashboard() {
                     ":hackathonId",
                     ACTIVE_HACKATHON.id,
                   )}
-                  className="rounded-2xl bg-gray-900 px-4 py-3 text-center text-sm font-bold text-white hover:bg-black"
+                  className="rounded-2xl bg-gray-900 px-4 py-3 text-center text-sm font-bold text-white hover:bg-white"
                 >
                   Submit
                 </Link>
@@ -206,8 +214,8 @@ export default function Dashboard() {
       </section>
 
       {/* Main Dashboard Content */}
-      <section className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-        <div className="grid gap-8 lg:grid-cols-[1fr_360px]">
+      <section className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8">
+        <div className="grid gap-8 lg:grid-cols-[1fr_340px]">
           {/* Left Column */}
           <div className="space-y-8">
             {/* Quick Actions */}
