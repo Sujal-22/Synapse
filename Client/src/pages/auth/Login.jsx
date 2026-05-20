@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { ROUTES } from "../../utils/constants";
-import logo from "../../assets/synapse-logo.png";
+import logo from "../../assets/synapseLogo/synapseLogo.png";
 
 export default function Login() {
   const navigate = useNavigate();

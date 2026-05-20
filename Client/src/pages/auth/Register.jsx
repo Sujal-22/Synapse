@@ -8,7 +8,7 @@ import {
   normalizeUsername,
   validateUsername,
 } from "../../services/profileService";
-import logo from "../../assets/synapse-logo.png";
+import logo from "../../assets/synapseLogo/synapseLogo.png";
 
 const STEPS = ["Account", "Profile", "Skills"];
 

@@ -1,44 +1,33 @@
-import { useEffect, useState } from "react";
-import { useAuth } from "../../context/useAuth";
-import { supabase } from "../../lib/supabase";
-import { SKILL_OPTIONS, DOMAIN_OPTIONS } from "../../utils/constants";
+import { useState, useEffect } from "react";
+import { useAuth } from "../../context/useAuth.jsx";
+import {
+  SKILL_OPTIONS,
+  DOMAIN_OPTIONS,
+} from "../../utils/constants.js";
+import { supabase } from "../../lib/supabase.js";
 import {
   getDisplayName,
   getUsername,
   getAvatarLetter,
 } from "../../utils/userDisplay";
 
-const YEAR_OPTIONS = [
-  { value: "1", label: "1st Year" },
-  { value: "2", label: "2nd Year" },
-  { value: "3", label: "3rd Year" },
-  { value: "4", label: "4th Year" },
-  { value: "5", label: "5th Year / PG" },
-  { value: "0", label: "Alumni / Other" },
-];
-
 export default function Profile() {
-  const { user, profile,fetchProfile } = useAuth();
-
-  const displayName = getDisplayName(profile,user);
-  const username = getUsername(profile,user);
-  const avatarLetter = getAvatarLetter(profile,user);
+  const { user, profile, updateProfile, fetchProfile } = useAuth();
 
   const [form, setForm] = useState({
     full_name: "",
-    mobile: "",
     bio: "",
     college: "",
     year_of_study: "",
+    mobile: "",
     github_url: "",
     linkedin_url: "",
-    avatar_url: "",
     skills: [],
     domains: [],
+    avatar_url: "",
   });
-
   const [saving, setSaving] = useState(false);
-  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -50,15 +39,15 @@ export default function Profile() {
 
       setForm({
         full_name: profile.full_name || "",
-        mobile: profile.mobile || "",
         bio: profile.bio || "",
         college: profile.college || "",
         year_of_study: profile.year_of_study || "",
+        mobile: profile.mobile || "",
         github_url: profile.github_url || "",
         linkedin_url: profile.linkedin_url || "",
-        avatar_url: profile.avatar_url || "",
         skills: profile.skills || [],
         domains: profile.domains || [],
+        avatar_url: profile.avatar_url || "",
       });
     });
 
@@ -67,193 +56,163 @@ export default function Profile() {
     };
   }, [profile]);
 
-  function setField(field, value) {
-    setForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const displayName = getDisplayName(profile, user);
+  const username = getUsername(profile, user);
+  const avatarLetter = getAvatarLetter(profile, user);
 
-    if (message) setMessage("");
-    if (error) setError("");
-  }
+  const handleInput = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setMessage("");
+    setError("");
+  };
 
-  function toggleArray(field, value, max) {
-    const current = form[field] || [];
-    const exists = current.includes(value);
+  const toggleArray = (key, value, max) => {
+    setForm((prev) => {
+      const exists = prev[key].includes(value);
+      if (exists) {
+        return { ...prev, [key]: prev[key].filter((v) => v !== value) };
+      }
+      if (max && prev[key].length >= max) return prev;
+      return { ...prev, [key]: [...prev[key], value] };
+    });
+  };
 
-    if (exists) {
-      setField(
-        field,
-        current.filter((item) => item !== value),
-      );
+  const handleAvatarUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !user?.id) return;
+
+    if (!["image/png", "image/jpeg", "image/webp"].includes(file.type)) {
+      setError("Only PNG, JPG, or WEBP images allowed.");
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      setError("Image must be smaller than 2MB.");
       return;
     }
 
-    if (max && current.length >= max) return;
+    setUploading(true);
+    setError("");
+    setMessage("");
 
-    setField(field, [...current, value]);
-  }
+    try {
+      const ext = file.name.split(".").pop();
+      const filePath = `${user.id}/avatar-${Date.now()}.${ext}`;
 
- async function handleAvatarUpload(event) {
-   const file = event.target.files?.[0];
+      const { error: uploadError } = await supabase.storage
+        .from("avatars")
+        .upload(filePath, file, {
+          upsert: true,
+        });
+      if (uploadError) throw uploadError;
 
-   if (!file || !user?.id) return;
+      const { data: publicData } = supabase.storage
+        .from("avatars")
+        .getPublicUrl(filePath);
+      const url = publicData?.publicUrl;
+      if (!url) throw new Error("Failed to get public URL.");
 
-   setUploadingAvatar(true);
-   setError("");
-   setMessage("");
+      const { error: updateError } = await supabase
+        .from("profiles")
+        .update({ avatar_url: url })
+        .eq("id", user.id);
+      if (updateError) throw updateError;
 
-   try {
-     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+      handleInput("avatar_url", url);
+      await fetchProfile(user.id);
+      setMessage("Profile picture updated.");
+    } catch (err) {
+      setError(err.message || "Avatar upload failed.");
+    } finally {
+      setUploading(false);
+      e.target.value = "";
+    }
+  };
 
-     if (!allowedTypes.includes(file.type)) {
-       throw new Error("Only JPG, PNG, or WEBP images are allowed.");
-     }
+  const handleSave = async () => {
+    if (!user?.id) return;
+    setSaving(true);
+    setError("");
+    setMessage("");
 
-     if (file.size > 2 * 1024 * 1024) {
-       throw new Error("Profile picture must be less than 2MB.");
-     }
-
-     const fileExt = file.name.split(".").pop();
-     const filePath = `${user.id}/avatar-${Date.now()}.${fileExt}`;
-
-     const { error: uploadError } = await supabase.storage
-       .from("avatars")
-       .upload(filePath, file, {
-         cacheControl: "3600",
-         upsert: true,
-       });
-
-     if (uploadError) throw uploadError;
-
-     const { data: publicUrlData } = supabase.storage
-       .from("avatars")
-       .getPublicUrl(filePath);
-
-     const publicUrl = publicUrlData?.publicUrl;
-
-     if (!publicUrl) {
-       throw new Error("Could not generate avatar URL.");
-     }
-
-     const { data: updatedProfile, error: updateError } = await supabase
-       .from("profiles")
-       .update({ avatar_url: publicUrl })
-       .eq("id", user.id)
-       .select("*")
-       .single();
-
-     if (updateError) throw updateError;
-
-     setForm((prev) => ({
-       ...prev,
-       avatar_url: updatedProfile.avatar_url,
-     }));
-
-     await fetchProfile(user.id);
-
-     setMessage("Profile picture updated successfully.");
-   } catch (err) {
-     console.error("Avatar upload error:", err);
-     setError(err.message || "Profile picture update failed.");
-   } finally {
-     setUploadingAvatar(false);
-     event.target.value = "";
-   }
- }
-async function handleSave(e) {
-  e.preventDefault();
-
-  if (!user?.id) {
-    setError("User is not authenticated.");
-    return;
-  }
-
-  setSaving(true);
-  setError("");
-  setMessage("");
-
-  try {
-    const { error: updateError } = await supabase
-      .from("profiles")
-      .update({
+    try {
+      const { error: updateError } = await updateProfile({
         full_name: form.full_name,
-        mobile: form.mobile,
         bio: form.bio,
         college: form.college,
         year_of_study: form.year_of_study,
+        mobile: form.mobile,
         github_url: form.github_url,
         linkedin_url: form.linkedin_url,
-        avatar_url: form.avatar_url,
         skills: form.skills,
         domains: form.domains,
-      })
-      .eq("id", user.id);
+        avatar_url: form.avatar_url,
+      });
+      if (updateError) throw updateError;
+      await fetchProfile(user.id);
+      setMessage("Profile updated successfully.");
+    } catch (err) {
+      setError(err.message || "Could not save profile.");
+    } finally {
+      setSaving(false);
+    }
+  };
 
-    if (updateError) throw updateError;
-
-    await fetchProfile(user.id);
-
-    setMessage("Profile updated successfully.");
-  } catch (err) {
-    console.error("Profile save error:", err);
-    setError(err.message || "Profile update failed.");
-  } finally {
-    setSaving(false);
-  }
-}
-
-  const completion = calculateProfileCompletion(form);
+  const progress =
+    (["full_name", "college", "year_of_study"].filter((k) => form[k])?.length +
+      (form.bio ? 1 : 0) +
+      (form.avatar_url ? 1 : 0) +
+      (form.skills?.length ? 1 : 0) +
+      (form.domains?.length ? 1 : 0) +
+      (form.github_url ? 1 : 0) +
+      (form.linkedin_url ? 1 : 0)) /
+    8;
 
   return (
-    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
-      {/* Hero */}
+    <main className="min-h-screen w-full bg-gray-50">
+      {/* Profile Hero */}
       <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8 lg:py-10">
-          <div className="grid w-full min-w-0 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="min-w-0 rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
-              <div className="flex flex-col gap-6 md:flex-row md:items-center">
-                <div className="relative h-28 w-28 shrink-0">
-                  {form.avatar_url ? (
-                    <img
-                      src={form.avatar_url}
-                      alt={displayName}
-                      className="h-28 w-28 rounded-3xl border-4 border-white/20 object-cover shadow-lg"
-                    />
-                  ) : (
-                    <div className="flex h-28 w-28 items-center justify-center rounded-3xl border-4 border-white/20 bg-white text-4xl font-black text-synapse-700 shadow-lg">
-                      {avatarLetter}
-                    </div>
+        <div className="mx-auto w-full max-w-340 px-6 py-12 sm:px-8 lg:px-10">
+          <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
+            <div className="rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
+              <div className="flex flex-col items-center gap-6 md:flex-row">
+                <div className="gap-6">
+                {form.avatar_url ? (
+                  <img
+                    src={form.avatar_url}
+                    alt={displayName}
+                    className="h-28 w-28 rounded-3xl object-cover shadow-lg ring-4 ring-white/20"
+                  />
+                ) : (
+                  <div className="flex h-28 w-28 items-center justify-center rounded-3xl bg-white text-4xl font-black text-synapse-700 shadow-lg ring-4 ring-white/20">
+                    {avatarLetter}
+                  </div>
                   )}
 
-                  <label className="absolute -bottom-3 left-1/2 flex -translate-x-1/2 cursor-pointer items-center justify-center rounded-full bg-white px-4 py-2 text-xs font-black text-gray-900 shadow-lg hover:bg-gray-100">
-                    {uploadingAvatar ? "Uploading..." : "Change"}
-                    <input
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp"
-                      onChange={handleAvatarUpload}
-                      disabled={uploadingAvatar}
-                      className="hidden"
-                    />
+                  <label className="relative cursor-pointer rounded-full bg-white px-4 py-3 text-xs font-bold text-gray-900 shadow-lg hover:bg-gray-100">
+                  {uploading ? "Uploading..." : "Change Photo"}
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/webp"
+                    onChange={handleAvatarUpload}
+                    disabled={uploading}
+                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                  />
                   </label>
                 </div>
-
+                
                 <div className="min-w-0 flex-1">
-                  <p className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white/80 ring-1 ring-white/10">
-                    Profile
+                  <p className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/80 ring-1 ring-white/10">
+                    Your Profile
                   </p>
-
-                  <h1 className="mt-5 truncate text-4xl font-black tracking-tight sm:text-5xl">
+                  <h1 className="mt-4 text-3xl font-black sm:text-4xl">
                     {displayName}
                   </h1>
-
-                  <p className="mt-2 truncate text-lg font-semibold text-white/60">
+                  <p className="mt-1 text-sm font-semibold text-white/60">
                     {username}
                   </p>
-
-                  <p className="mt-4 max-w-2xl text-sm leading-7 text-white/65">
+                  <p className="mt-4 text-sm leading-7 text-white/70">
                     {form.bio ||
-                      "Add your bio, skills, social links, and profile picture to improve your Synapse team matching."}
+                      "Add your bio, skills, and social links to personalise your profile."}
                   </p>
                 </div>
               </div>
@@ -263,188 +222,226 @@ async function handleSave(e) {
               <p className="text-sm font-bold text-synapse-700">
                 Profile Completion
               </p>
-
               <h2 className="mt-3 text-3xl font-black text-gray-900">
-                {completion}%
+                {Math.round(progress * 100)}%
               </h2>
-
-              <div className="mt-5 h-3 overflow-hidden rounded-full bg-gray-100">
+              <div className="mt-4 h-3 w-full overflow-hidden rounded-full bg-gray-100">
                 <div
                   className="h-full rounded-full bg-synapse-700"
-                  style={{ width: `${completion}%` }}
+                  style={{ width: `${Math.round(progress * 100)}%` }}
                 />
               </div>
-
-              <p className="mt-4 text-sm leading-6 text-gray-500">
-                Complete your profile to get better teammate recommendations and
-                stronger project visibility.
+              <p className="mt-4 text-sm text-gray-500">
+                Complete your profile for better team matching and visibility.
               </p>
-
-              <div className="mt-5 flex flex-wrap gap-2">
-                {!form.avatar_url && <MissingChip label="Photo" />}
-                {!form.bio && <MissingChip label="Bio" />}
-                {!form.github_url && <MissingChip label="GitHub" />}
-                {!form.linkedin_url && <MissingChip label="LinkedIn" />}
-                {form.skills.length === 0 && <MissingChip label="Skills" />}
+              <div className="mt-4 flex flex-wrap gap-2">
+                {!form.avatar_url && <Chip text="Photo" />}
+                {!form.bio && <Chip text="Bio" />}
+                {!form.github_url && <Chip text="GitHub" />}
+                {!form.linkedin_url && <Chip text="LinkedIn" />}
+                {!form.skills?.length && <Chip text="Skills" />}
+                {!form.domains?.length && <Chip text="Domains" />}
               </div>
             </aside>
           </div>
         </div>
       </section>
 
-      {/* Content */}
-      <section className="mx-auto w-full max-w-340 px-4 py-8 sm:px-6 lg:px-8">
+      {/* Edit Form and Live Preview */}
+      <section className="mx-auto w-full max-w-340 px-6 py-12 sm:px-8 lg:px-10">
         {message && (
           <div className="mb-6 rounded-2xl border border-emerald-100 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-700">
             {message}
           </div>
         )}
-
         {error && (
           <div className="mb-6 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-semibold text-red-600">
             {error}
           </div>
         )}
 
-        <form
-          onSubmit={handleSave}
-          className="grid w-full min-w-0 gap-8 lg:grid-cols-[minmax(0,1fr)_360px]"
-        >
-          {/* Left Column */}
-          <div className="space-y-8">
-            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
-              <SectionHeading
-                title="Personal Information"
-                subtitle="Basic details shown across your Synapse profile."
-              />
-
+        <div className="grid gap-10 lg:grid-cols-[1fr_360px]">
+          {/* Left column: form */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSave();
+            }}
+            className="space-y-10"
+          >
+            {/* Personal Info */}
+            <div className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-black text-gray-900">
+                Personal Info
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Update your basic details below.
+              </p>
               <div className="mt-6 grid gap-5 md:grid-cols-2">
-                <Field
-                  label="Full name"
+                <TextInput
+                  label="Full Name"
                   value={form.full_name}
-                  onChange={(value) => setField("full_name", value)}
-                  placeholder="Enter your full name"
+                  onChange={(val) => handleInput("full_name", val)}
+                  placeholder="Your name"
                 />
-
-                <Field
-                  label="Username"
-                  value={username}
-                  disabled
-                  placeholder="@username"
-                  helper="Username is chosen during registration."
-                />
-
-                <Field
+                <TextInput
                   label="College / University"
                   value={form.college}
-                  onChange={(value) => setField("college", value)}
-                  placeholder="Enter your college"
+                  onChange={(val) => handleInput("college", val)}
+                  placeholder="Your college"
                 />
-
                 <div>
                   <label className="mb-2 block text-sm font-bold text-gray-700">
-                    Year of study
+                    Year of Study
                   </label>
-
                   <select
                     value={form.year_of_study}
-                    onChange={(e) => setField("year_of_study", e.target.value)}
+                    onChange={(e) =>
+                      handleInput("year_of_study", e.target.value)
+                    }
                     className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-3.5 text-sm text-gray-900 outline-none focus:border-synapse-600 focus:ring-4 focus:ring-synapse-50"
                   >
-                    <option value="">Select year</option>
-                    {YEAR_OPTIONS.map((item) => (
-                      <option key={item.value} value={item.value}>
-                        {item.label}
-                      </option>
-                    ))}
                   </select>
                 </div>
-
-                <Field
+                <TextInput
                   label="Mobile"
                   value={form.mobile}
-                  onChange={(value) => setField("mobile", value)}
-                  placeholder="Enter mobile number"
-                />
-
-                <Field
-                  label="Avatar URL"
-                  value={form.avatar_url}
-                  onChange={(value) => setField("avatar_url", value)}
-                  placeholder="Or paste image URL"
+                  onChange={(val) => handleInput("mobile", val)}
+                  placeholder="Mobile number"
                 />
               </div>
+            </div>
 
-              <div className="mt-5">
+            {/* Bio */}
+            <div className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-black text-gray-900">Bio</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                A short description about yourself.
+              </p>
+              <div className="mt-4">
                 <label className="mb-2 block text-sm font-bold text-gray-700">
                   Bio
                 </label>
-
                 <textarea
                   value={form.bio}
-                  onChange={(e) => setField("bio", e.target.value)}
-                  placeholder="Write a short bio about your skills, interests, and hackathon goals..."
-                  rows={5}
-                  className="w-full resize-none rounded-2xl border border-gray-200 bg-white px-5 py-3.5 text-sm text-gray-900 outline-none transition placeholder:text-gray-400 focus:border-synapse-600 focus:ring-4 focus:ring-synapse-50"
+                  onChange={(e) => handleInput("bio", e.target.value)}
+                  rows={4}
+                  placeholder="Tell us about your skills, interests, and goals..."
+                  className="w-full resize-none rounded-2xl border border-gray-200 px-5 py-3.5 text-sm text-gray-900 outline-none focus:border-synapse-600 focus:ring-4 focus:ring-synapse-50"
                 />
               </div>
-            </section>
+            </div>
 
-            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
-              <SectionHeading
-                title="Skills and Domains"
-                subtitle="These help Synapse recommend better teams and events."
-              />
+            {/* Skills & Domains */}
+            <div className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-black text-gray-900">
+                Skills & Domains
+              </h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Enhance your matching accuracy by selecting relevant skills and
+                domains.
+              </p>
 
-              <div className="mt-6 space-y-6">
-                <ChipSection
-                  label="Skills"
-                  max={8}
-                  options={SKILL_OPTIONS}
-                  selected={form.skills}
-                  onToggle={(skill) => toggleArray("skills", skill, 8)}
-                />
-
-                <ChipSection
-                  label="Preferred domains"
-                  max={3}
-                  options={DOMAIN_OPTIONS}
-                  selected={form.domains}
-                  onToggle={(domain) => toggleArray("domains", domain, 3)}
-                />
+              {/* Skills */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-bold text-gray-700">
+                    Skills
+                  </label>
+                  <span className="text-xs font-semibold text-gray-400">
+                    {form.skills.length}/8
+                  </span>
+                </div>
+                <div className="mt-3 flex max-h-44 flex-wrap gap-2 overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50 p-3">
+                  {SKILL_OPTIONS.map((skill) => {
+                    const active = form.skills.includes(skill);
+                    return (
+                      <button
+                        key={skill}
+                        type="button"
+                        onClick={() => toggleArray("skills", skill, 8)}
+                        className={`rounded-full px-3 py-2 text-xs font-bold transition ${
+                          active
+                            ? "bg-synapse-700 text-white"
+                            : "bg-white text-gray-600 hover:bg-synapse-50 hover:text-synapse-700"
+                        }`}
+                      >
+                        {skill}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </section>
-          </div>
 
-          {/* Right Column */}
-          <aside className="space-y-8">
-            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
-              <SectionHeading
-                title="Social Links"
-                subtitle="Add links that represent your work."
-              />
+              {/* Domains */}
+              <div className="mt-6">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-bold text-gray-700">
+                    Preferred Domains
+                  </label>
+                  <span className="text-xs font-semibold text-gray-400">
+                    {form.domains.length}/3
+                  </span>
+                </div>
+                <div className="mt-3 flex max-h-44 flex-wrap gap-2 overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50 p-3">
+                  {DOMAIN_OPTIONS.map((domain) => {
+                    const active = form.domains.includes(domain);
+                    return (
+                      <button
+                        key={domain}
+                        type="button"
+                        onClick={() => toggleArray("domains", domain, 3)}
+                        className={`rounded-full px-3 py-2 text-xs font-bold transition ${
+                          active
+                            ? "bg-synapse-700 text-white"
+                            : "bg-white text-gray-600 hover:bg-synapse-50 hover:text-synapse-700"
+                        }`}
+                      >
+                        {domain}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
 
-              <div className="mt-6 space-y-5">
-                <Field
+            {/* Social Links */}
+            <div className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
+              <h3 className="text-xl font-black text-gray-900">Social Links</h3>
+              <p className="mt-1 text-sm text-gray-500">
+                Share your coding presence and professional profile.
+              </p>
+              <div className="mt-4 space-y-5">
+                <TextInput
                   label="GitHub URL"
                   value={form.github_url}
-                  onChange={(value) => setField("github_url", value)}
+                  onChange={(val) => handleInput("github_url", val)}
                   placeholder="https://github.com/username"
                 />
-
-                <Field
+                <TextInput
                   label="LinkedIn URL"
                   value={form.linkedin_url}
-                  onChange={(value) => setField("linkedin_url", value)}
+                  onChange={(val) => handleInput("linkedin_url", val)}
                   placeholder="https://linkedin.com/in/username"
                 />
               </div>
-            </section>
+            </div>
 
-            <section className="rounded-4xl bg-gray-900 p-6 text-white shadow-xl">
-              <p className="text-sm font-bold text-white/50">Public Preview</p>
+            {/* Save button */}
+            <button
+              type="submit"
+              disabled={saving || uploading}
+              className="w-full rounded-2xl bg-synapse-700 px-5 py-3.5 text-sm font-black text-white shadow-lg shadow-synapse-200 hover:bg-synapse-800 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {saving ? "Saving..." : "Save Profile"}
+            </button>
+          </form>
 
-              <div className="mt-6 flex items-center gap-4">
+          {/* Right column: live preview */}
+          <aside className="space-y-6">
+            <div className="rounded-4xl bg-gray-900 p-6 text-white shadow-xl">
+              <h3 className="text-lg font-bold">Profile Preview</h3>
+              <div className="mt-4 flex items-center gap-4">
                 {form.avatar_url ? (
                   <img
                     src={form.avatar_url}
@@ -452,27 +449,23 @@ async function handleSave(e) {
                     className="h-16 w-16 rounded-2xl object-cover"
                   />
                 ) : (
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-2xl font-black text-gray-900">
+                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-synapse-700 text-2xl font-black">
                     {avatarLetter}
                   </div>
                 )}
-
-                <div className="min-w-0">
-                  <h3 className="truncate text-xl font-black">
+                <div>
+                  <p className="text-xl font-black">
                     {form.full_name || displayName}
-                  </h3>
-                  <p className="truncate text-sm font-semibold text-white/50">
+                  </p>
+                  <p className="text-sm font-semibold text-white/60">
                     {username}
                   </p>
                 </div>
               </div>
-
-              <p className="mt-5 text-sm leading-7 text-white/60">
-                {form.bio ||
-                  "Your bio will appear here after you add profile details."}
+              <p className="mt-4 text-sm leading-6 text-white/70">
+                {form.bio || "Your bio will appear here."}
               </p>
-
-              <div className="mt-5 flex flex-wrap gap-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 {form.skills.slice(0, 4).map((skill) => (
                   <span
                     key={skill}
@@ -482,118 +475,35 @@ async function handleSave(e) {
                   </span>
                 ))}
               </div>
-            </section>
-
-            <button
-              type="submit"
-              disabled={saving || uploadingAvatar}
-              className="w-full rounded-2xl bg-synapse-700 px-5 py-4 text-sm font-black text-white shadow-lg shadow-synapse-200 hover:bg-synapse-800 disabled:opacity-60"
-            >
-              {saving ? "Saving Profile..." : "Save Profile"}
-            </button>
+            </div>
           </aside>
-        </form>
+        </div>
       </section>
     </main>
   );
 }
 
-function Field({
-  label,
-  value,
-  onChange,
-  placeholder,
-  helper,
-  disabled = false,
-}) {
+function TextInput({ label, value, onChange, placeholder }) {
   return (
     <div>
       <label className="mb-2 block text-sm font-bold text-gray-700">
         {label}
       </label>
-
       <input
+        type="text"
         value={value}
-        onChange={(e) => onChange?.(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
-        disabled={disabled}
-        className={`w-full rounded-2xl border px-5 py-3.5 text-sm outline-none transition placeholder:text-gray-400 ${
-          disabled
-            ? "cursor-not-allowed border-gray-100 bg-gray-50 text-gray-400"
-            : "border-gray-200 bg-white text-gray-900 focus:border-synapse-600 focus:ring-4 focus:ring-synapse-50"
-        }`}
+        className="w-full rounded-2xl border border-gray-200 px-5 py-3.5 text-sm text-gray-900 outline-none focus:border-synapse-600 focus:ring-4 focus:ring-synapse-50"
       />
-
-      {helper && <p className="mt-1.5 text-xs text-gray-400">{helper}</p>}
     </div>
   );
 }
 
-function ChipSection({ label, options, selected, max, onToggle }) {
-  return (
-    <div>
-      <div className="mb-3 flex items-center justify-between">
-        <label className="text-sm font-bold text-gray-700">{label}</label>
-        <span className="text-xs font-bold text-gray-400">
-          {selected.length}/{max}
-        </span>
-      </div>
-
-      <div className="flex max-h-56 flex-wrap gap-2 overflow-y-auto rounded-2xl border border-gray-100 bg-gray-50 p-3">
-        {options.map((option) => {
-          const active = selected.includes(option);
-
-          return (
-            <button
-              key={option}
-              type="button"
-              onClick={() => onToggle(option)}
-              className={`rounded-full px-3 py-2 text-xs font-bold transition ${
-                active
-                  ? "bg-synapse-700 text-white"
-                  : "bg-white text-gray-600 hover:bg-synapse-50 hover:text-synapse-700"
-              }`}
-            >
-              {option}
-            </button>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-function SectionHeading({ title, subtitle }) {
-  return (
-    <div>
-      <h2 className="text-2xl font-black text-gray-900">{title}</h2>
-      <p className="mt-1 text-sm leading-6 text-gray-400">{subtitle}</p>
-    </div>
-  );
-}
-
-function MissingChip({ label }) {
+function Chip({ text }) {
   return (
     <span className="rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-700">
-      Missing {label}
+      Missing {text}
     </span>
   );
-}
-
-function calculateProfileCompletion(form) {
-  const checks = [
-    form.full_name,
-    form.bio,
-    form.college,
-    form.year_of_study,
-    form.github_url,
-    form.linkedin_url,
-    form.avatar_url,
-    form.skills.length > 0,
-    form.domains.length > 0,
-  ];
-
-  const completed = checks.filter(Boolean).length;
-
-  return Math.round((completed / checks.length) * 100);
 }

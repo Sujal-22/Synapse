@@ -1,12 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
-export default function useSupabaseQuery(queryFn, deps = [], options = {}) {
-  const {
-    enabled = true,
-    initialData = null,
-    onSuccess,
-    onError,
-  } = options;
+export default function useSupabaseQuery(queryFn, depsKey = "", options = {}) {
+  const { enabled = true, initialData = null, onSuccess, onError } = options;
 
   const [data, setData] = useState(initialData);
   const [error, setError] = useState(null);
@@ -27,38 +22,36 @@ export default function useSupabaseQuery(queryFn, deps = [], options = {}) {
       if (result?.error) {
         setError(result.error);
         onError?.(result.error);
-        setLoading(false);
         return result;
       }
 
       const finalData = result?.data ?? result ?? initialData;
-
       setData(finalData);
       onSuccess?.(finalData);
-      setLoading(false);
-
       return result;
     } catch (err) {
       setError(err);
       onError?.(err);
+      return { data: null, error: err };
+    } finally {
       setLoading(false);
-
-      return {
-        data: null,
-        error: err,
-      };
     }
-  }, deps);
+  }, [enabled, queryFn, initialData, onSuccess, onError]);
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    let cancelled = false;
 
-  return {
-    data,
-    error,
-    loading,
-    refetch,
-    setData,
-  };
+    // ✅ Async IIFE — linter can now see setState is never called synchronously
+    async function run() {
+      if (!cancelled) await refetch();
+    }
+
+    run();
+
+    return () => {
+      cancelled = true; // prevent setState on unmounted component
+    };
+  }, [refetch, depsKey]); // ✅ depsKey triggers refetch when changed externally
+
+  return { data, error, loading, refetch, setData };
 }

@@ -1,10 +1,14 @@
 import { Link } from "react-router-dom";
-import Header from "../../components/layout/Header";
-import { ROUTES } from "../../utils/constants";
-import teamImage1 from "../../assets/sujal.jpeg";
-import teamImage2 from "../../assets/vedant.jpeg";
-import teamImage3 from "../../assets/Prerna.jpeg";
-import teamImage4 from "../../assets/humesh.jpeg"
+import Header from "../../components/layout/Header.jsx";
+import { ROUTES } from "../../utils/constants.js";
+import teamImage1 from "../../assets/builder/sujal.jpeg";
+import teamImage2 from "../../assets/builder/vedant.jpeg";
+import teamImage3 from "../../assets/builder/prerna.jpeg";
+import teamImage4 from "../../assets/builder/humesh.jpeg";
+import instagramIcon from "../../assets/socialLogo/instagram.svg";
+import githubIcon from "../../assets/socialLogo/github.svg";
+import linkedinIcon from "../../assets/socialLogo/linkedin.svg";
+import xIcon from "../../assets/socialLogo/X.svg";
 
 
 const RECENT_HACKATHONS = [
@@ -96,7 +100,7 @@ export default function Home() {
             </p>
 
             <h1 className="max-w-3xl text-left text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
-              Build teams. Submit projects. Continue after the demo.
+              Build teams <br></br>Submit projects<br></br> Continue after the demo.
             </h1>
 
             <p className="mt-6 max-w-2xl text-left text-lg leading-8 text-white/70">
@@ -122,7 +126,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="rounded-4xl bg-white/10 p-3 shadow-2xl ring-1 ring-white/10">
+          <div className="rounded-4xl bg-white/10 p-2 space-y-4 shadow-2xl ring-1 ring-white/10">
             <div className="rounded-3xl bg-white p-6">
               <p className="text-sm font-bold text-synapse-700">
                 Live Platform Preview
@@ -312,45 +316,27 @@ function RecentHackathonCard({ hackathon }) {
 
 function DeveloperCard({ developer }) {
   return (
-    <article className="group overflow-hidden rounded-4xl border border-gray-100 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-      <div className="relative h-80 overflow-hidden bg-gray-900">
+    <article className="overflow-hidden rounded-4xl border border-gray-100 bg-white shadow-sm">
+      <div className="aspect-4/5 w-full overflow-hidden bg-gray-100">
         <img
           src={developer.image}
           alt={developer.name}
-          className="h-full w-full object-cover opacity-80 transition duration-500 group-hover:scale-105"
+          className="h-full w-full object-cover object-top"
         />
-
-        <div className="absolute inset-0 bg-linear-to-t from-black via-black/30 to-transparent" />
-
-        <div className="absolute left-6 top-6 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-[0.2em] text-white ring-1 ring-white/20">
-          Builder
-        </div>
-
-        <div className="absolute bottom-6 left-6 right-6">
-          <h3 className="text-3xl font-black text-white">{developer.name}</h3>
-          <p className="mt-1 text-sm font-semibold text-white/70">
-            {developer.role}
-          </p>
-        </div>
       </div>
 
-      <div className="p-6">
-        <div className="flex flex-wrap gap-2">
-          {developer.skills.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-full bg-gray-100 px-3 py-1.5 text-xs font-bold text-gray-600"
-            >
-              {skill}
-            </span>
-          ))}
-        </div>
+      <div className="p-5">
+        <h3 className="text-xl font-black text-gray-900">{developer.name}</h3>
+
+        <p className="mt-1 text-sm font-semibold text-gray-400">
+          {developer.role}
+        </p>
 
         <div className="mt-6 flex items-center gap-3">
-          <SocialButton label="Instagram" icon="" />
-          <SocialButton label="X" icon="𝕏" />
-          <SocialButton label="GitHub" icon="GH" />
-          <SocialButton label="LinkedIn" icon="in" />
+          <SocialButton label="Instagram" icon={instagramIcon} />
+          <SocialButton label="X" icon={xIcon} />
+          <SocialButton label="GitHub" icon={githubIcon} />
+          <SocialButton label="LinkedIn" icon={linkedinIcon} />
         </div>
       </div>
     </article>
@@ -359,13 +345,14 @@ function DeveloperCard({ developer }) {
 
 function SocialButton({ label, icon }) {
   return (
-    <a
-      href="#"
+    <button
+      type="button"
       aria-label={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full bg-synapse-50 text-xs font-black text-synapse-700 transition hover:bg-synapse-700 hover:text-white"
+      title={label}
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
     >
-      {icon}
-    </a>
+      <img src={icon} alt={label} className="h-5 w-5 object-contain" />
+    </button>
   );
 }
 
@@ -380,7 +367,7 @@ function FeatureCard({ title, description }) {
 
 function Footer() {
   return (
-    <footer className="w-full border-t border-gray-200 bg-[#f3f8f8]">
+    <footer className="overflow-hidden border-t border-gray-200 bg-[#f3f8f8]">
       <div className="mx-auto grid w-full max-w-340 gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:px-8">
         <div>
           <h2 className="max-w-2xl text-5xl font-black leading-tight tracking-tight text-gray-900 sm:text-6xl">
@@ -391,24 +378,22 @@ function Footer() {
             build it.
           </h2>
 
-          <div className="mt-14 flex flex-wrap gap-5 text-2xl text-gray-400">
-            <FooterSocial label="Telegram" icon="◉" />
-            <FooterSocial label="X" icon="𝕏" />
-            <FooterSocial label="Discord" icon="☯" />
-            <FooterSocial label="Dribbble" icon="◎" />
-            <FooterSocial label="GitHub" icon="GH" />
-            <FooterSocial label="LinkedIn" icon="in" />
-          </div>
-
-          <div className="mt-16 border-t border-gray-300 pt-8">
+          <div className="mt-16 border-t border-gray-300 pt-3">
             <Link
               to={ROUTES.HOME}
-              className="text-3xl font-black text-synapse-600"
+              className="text-4xl font-black text-synapse-600"
             >
               Synapse
             </Link>
 
-            <p className="mt-16 text-sm text-gray-600">
+            <div className="mt-6 flex items-center gap-3 ">
+              <FooterSocial label="X" icon={xIcon} />
+              <FooterSocial label="Instagram" icon={instagramIcon} />
+              <FooterSocial label="GitHub" icon={githubIcon} />
+              <FooterSocial label="LinkedIn" icon={linkedinIcon} />
+            </div>
+
+            <p className="mt-6 text-sm text-gray-600">
               © 2026, Synapse Hackathon Ecosystem
             </p>
           </div>
@@ -487,12 +472,13 @@ function FooterColumn({ title, links }) {
 
 function FooterSocial({ label, icon }) {
   return (
-    <a
-      href="#"
+    <button
+      type="button"
       aria-label={label}
-      className="flex h-9 w-9 items-center justify-center rounded-full text-sm font-black text-gray-400 hover:bg-white hover:text-synapse-700"
+      title={label}
+      className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
     >
-      {icon}
-    </a>
+      <img src={icon} alt={label} className="h-5 w-5 object-contain" />
+    </button>
   );
 }

@@ -2,8 +2,12 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { ROUTES } from "../../utils/constants";
 import { cn } from "../../utils/index";
 import { useAuth } from "../../context/useAuth";
-import { getDisplayName, getUsername, getAvatarLetter, } from "../../utils/userDisplay";
-import logo from "../../assets/synapse-logo.png";
+import {
+  getDisplayName,
+  getUsername,
+  getAvatarLetter,
+} from "../../utils/userDisplay";
+import logo from "../../assets/synapseLogo/synapseLogo.png";
 
 const navItems = [
   { label: "Home", to: ROUTES.HOME },
@@ -15,10 +19,9 @@ const navItems = [
 export default function Header() {
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
-  const displayName = getDisplayName(profile,user);
-  const username = getUsername(profile,user);
-  const avatarLetter = getAvatarLetter(profile,user);
-
+  const displayName = getDisplayName(profile, user);
+  const username = getUsername(profile, user);
+  const avatarLetter = getAvatarLetter(profile, user);
 
   async function handleLogout() {
     const result = await signOut();
@@ -79,7 +82,8 @@ export default function Header() {
                   <img
                     src={profile.avatar_url}
                     alt={displayName}
-                    className="h-full w-full object-cover" />
+                    className="h-full w-full rounded-full object-cover"
+                  />
                 ) : (
                   avatarLetter
                 )}

@@ -10,30 +10,17 @@ export async function createHackathon(payload) {
     return { data, error };
 }
 
-export async function getHackathons(filters = {}) {
-    let query = supabase
+export async function getHackathons() {
+    const { data, error } = await supabase
         .from("hackathons")
         .select("*")
         .order("created_at", { ascending: false });
-
-    if (filters.status) {
-        query = query.eq("status", filters.status);
-    }
-
-    if (filters.search) {
-        query = query.or(
-            `title.ilike.%${filters.search}%,description.ilike.%${filters.search}%`,
-        );
-    }
-
-    const { data, error } = await query;
 
     return {
         data: data || [],
         error,
     };
 }
-
 export async function getHackathonById(id) {
     const { data, error } = await supabase
         .from("hackathons")

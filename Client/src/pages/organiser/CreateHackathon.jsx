@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/useAuth";
-import { ROUTES, DOMAIN_OPTIONS } from "../../utils/constants";
-import { createHackathon } from "../../services/hackathonService";
+import {useAuth } from "../../context/useAuth.jsx"
+import { ROUTES, DOMAIN_OPTIONS } from "../../utils/constants.js";
+import { createHackathon } from "../../services/hackathonService.js";
 
 export default function CreateHackathon() {
   const navigate = useNavigate();
@@ -111,8 +111,8 @@ export default function CreateHackathon() {
   return (
     <main className="min-h-screen w-full bg-gray-50">
       <section className="border-b border-gray-100 bg-white">
-        <div className="mx-auto w-full max-w-[1500px] px-4 py-10 sm:px-5 lg:px-6">
-          <div className="rounded-[2rem] bg-gradient-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
+        <div className="mx-auto w-full max-w-375 px-4 py-10 sm:px-5 lg:px-6">
+          <div className="rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
             <p className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white/80 ring-1 ring-white/10">
               Launch Hackathon
             </p>
@@ -134,13 +134,13 @@ export default function CreateHackathon() {
         </div>
       </section>
 
-      <section className="mx-auto w-full max-w-[1500px] px-4 py-10 sm:px-5 lg:px-6">
+      <section className="mx-auto w-full max-w-375 px-4 py-10 sm:px-5 lg:px-6">
         <form
           onSubmit={handleSubmit}
           className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_360px]"
         >
           <div className="space-y-8">
-            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm">
+            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-black text-gray-900">
                 Basic Details
               </h2>
@@ -205,7 +205,7 @@ export default function CreateHackathon() {
               </div>
             </section>
 
-            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm">
+            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-black text-gray-900">
                 Dates and Team Rules
               </h2>
@@ -250,7 +250,7 @@ export default function CreateHackathon() {
               </div>
             </section>
 
-            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm">
+            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
               <h2 className="text-2xl font-black text-gray-900">
                 Domains / Tags
               </h2>
@@ -283,7 +283,7 @@ export default function CreateHackathon() {
           </div>
 
           <aside className="space-y-6">
-            <section className="rounded-[2rem] border border-gray-100 bg-white p-6 shadow-sm">
+            <section className="rounded-4xl border border-gray-100 bg-white p-6 shadow-sm">
               <h2 className="text-xl font-black text-gray-900">
                 Publish Summary
               </h2>

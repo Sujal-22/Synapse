@@ -57,3 +57,4 @@ export const DOMAIN_OPTIONS = [
     'DevTools', 'EdTech', 'HealthTech', 'FinTech',
     'Sustainability', 'AR / VR', 'Open Source', 'Social Impact',
 ]
+
