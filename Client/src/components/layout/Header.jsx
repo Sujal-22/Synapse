@@ -101,7 +101,7 @@ export default function Header() {
             <>
               <Link
                 to={ROUTES.LOGIN}
-                className="rounded-xl px-4 py-2 text-sm font-semibold text-white hover:bg-gray-50"
+                className="rounded-xl px-4 py-2 text-sm font-semibold text-black hover:bg-gray-50"
               >
                 Login
               </Link>
