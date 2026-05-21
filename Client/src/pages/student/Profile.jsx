@@ -1,9 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "../../context/useAuth.jsx";
-import {
-  SKILL_OPTIONS,
-  DOMAIN_OPTIONS,
-} from "../../utils/constants.js";
+import { SKILL_OPTIONS, DOMAIN_OPTIONS } from "../../utils/Constants.js";
 import { supabase } from "../../lib/supabase.js";
 import {
   getDisplayName,
@@ -176,30 +173,30 @@ export default function Profile() {
             <div className="rounded-4xl bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 p-8 text-white shadow-xl">
               <div className="flex flex-col items-center gap-6 md:flex-row">
                 <div className="gap-6">
-                {form.avatar_url ? (
-                  <img
-                    src={form.avatar_url}
-                    alt={displayName}
-                    className="h-28 w-28 rounded-3xl object-cover shadow-lg ring-4 ring-white/20"
-                  />
-                ) : (
-                  <div className="flex h-28 w-28 items-center justify-center rounded-3xl bg-white text-4xl font-black text-synapse-700 shadow-lg ring-4 ring-white/20">
-                    {avatarLetter}
-                  </div>
+                  {form.avatar_url ? (
+                    <img
+                      src={form.avatar_url}
+                      alt={displayName}
+                      className="h-28 w-28 rounded-3xl object-cover shadow-lg ring-4 ring-white/20"
+                    />
+                  ) : (
+                    <div className="flex h-28 w-28 items-center justify-center rounded-3xl bg-white text-4xl font-black text-synapse-700 shadow-lg ring-4 ring-white/20">
+                      {avatarLetter}
+                    </div>
                   )}
 
                   <label className="relative cursor-pointer rounded-full bg-white px-4 py-3 text-xs font-bold text-gray-900 shadow-lg hover:bg-gray-100">
-                  {uploading ? "Uploading..." : "Change Photo"}
-                  <input
-                    type="file"
-                    accept="image/png,image/jpeg,image/webp"
-                    onChange={handleAvatarUpload}
-                    disabled={uploading}
-                    className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-                  />
+                    {uploading ? "Uploading..." : "Change Photo"}
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp"
+                      onChange={handleAvatarUpload}
+                      disabled={uploading}
+                      className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+                    />
                   </label>
                 </div>
-                
+
                 <div className="min-w-0 flex-1">
                   <p className="inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/80 ring-1 ring-white/10">
                     Your Profile
@@ -300,8 +297,7 @@ export default function Profile() {
                       handleInput("year_of_study", e.target.value)
                     }
                     className="w-full rounded-2xl border border-gray-200 bg-white px-5 py-3.5 text-sm text-gray-900 outline-none focus:border-synapse-600 focus:ring-4 focus:ring-synapse-50"
-                  >
-                  </select>
+                  ></select>
                 </div>
                 <TextInput
                   label="Mobile"

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { ROUTES } from "../../utils/constants";
+import { ROUTES } from "../../utils/Constants";
 import logo from "../../assets/synapseLogo/synapseLogo.png";
 
 export default function Login() {

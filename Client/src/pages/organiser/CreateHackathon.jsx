@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {useAuth } from "../../context/useAuth.jsx"
-import { ROUTES, DOMAIN_OPTIONS } from "../../utils/constants.js";
+import { useAuth } from "../../context/useAuth.jsx";
+import { ROUTES, DOMAIN_OPTIONS } from "../../utils/Constants.js";
 import { createHackathon } from "../../services/hackathonService.js";
 
 export default function CreateHackathon() {

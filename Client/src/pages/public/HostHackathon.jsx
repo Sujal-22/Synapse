@@ -1,8 +1,7 @@
 import { Link } from "react-router-dom";
-import { ROUTES } from "../../utils/constants";
+import { ROUTES } from "../../utils/Constants";
 
 export default function HostHackathon() {
-  
   return (
     <main className="min-h-screen w-full bg-gray-50">
       <section className="mx-auto w-full max-w-375 px-4 py-16 sm:px-5 lg:px-6">

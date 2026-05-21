@@ -1,6 +1,6 @@
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { ROUTES } from "../../utils/constants";
+import { ROUTES } from "../../utils/Constants";
 import {
   checkRegistration,
   registerForHackathon,

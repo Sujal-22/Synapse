@@ -1,5 +1,5 @@
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { ROUTES } from "../../utils/constants";
+import { ROUTES } from "../../utils/Constants";
 import { cn } from "../../utils/index";
 import { useAuth } from "../../context/useAuth";
 import {

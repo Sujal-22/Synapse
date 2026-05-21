@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { ROUTES } from "../../utils/constants";
+import { ROUTES } from "../../utils/Constants";
 
 const SKILL_FILTERS = [
   "All",

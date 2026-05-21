@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
-import { ROUTES, SKILL_OPTIONS, DOMAIN_OPTIONS } from "../../utils/constants";
+import { ROUTES, SKILL_OPTIONS, DOMAIN_OPTIONS } from "../../utils/Constants";
 import useDebounce from "../../hooks/useDebounce";
 import {
   checkUsernameAvailability,

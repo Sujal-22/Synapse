@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import Header from "../../components/layout/Header.jsx";
-import { ROUTES } from "../../utils/constants.js";
+import { ROUTES } from "../../utils/Constants.js";
 import teamImage1 from "../../assets/builder/sujal.jpeg";
 import teamImage2 from "../../assets/builder/vedant.jpeg";
 import teamImage3 from "../../assets/builder/prerna.jpeg";
@@ -9,7 +9,6 @@ import instagramIcon from "../../assets/socialLogo/instagram.svg";
 import githubIcon from "../../assets/socialLogo/github.svg";
 import linkedinIcon from "../../assets/socialLogo/linkedin.svg";
 import xIcon from "../../assets/socialLogo/X.svg";
-
 
 const RECENT_HACKATHONS = [
   {
@@ -54,29 +53,25 @@ const DEVELOPERS = [
   {
     name: "Sujal Kumar",
     role: "Full Stack Developer",
-    image:
-      teamImage1,
+    image: teamImage1,
     skills: ["React", "Supabase", "Node.js"],
   },
   {
     name: "Vedant",
     role: "Data Analyst",
-    image:
-      teamImage2,
+    image: teamImage2,
     skills: ["Python", "ML", "FastAPI"],
   },
   {
     name: "V Humesh",
     role: "Product Manager",
-    image:
-      teamImage4,
+    image: teamImage4,
     skills: ["Figma", "Design", "Research"],
   },
   {
     name: "Prerna Raj",
     role: "Backend Developer",
-    image:
-      teamImage3,
+    image: teamImage3,
     skills: ["Node.js", "API", "PostgreSQL"],
   },
 ];
@@ -100,7 +95,8 @@ export default function Home() {
             </p>
 
             <h1 className="max-w-3xl text-left text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
-              Build teams <br></br>Submit projects<br></br> Continue after the demo.
+              Build teams <br></br>Submit projects<br></br> Continue after the
+              demo.
             </h1>
 
             <p className="mt-6 max-w-2xl text-left text-lg leading-8 text-white/70">
