@@ -70,8 +70,9 @@ export default function Explore() {
   }, [hackathons, search, status, domain]);
 
   return (
-    <main className="min-h-screen overflow-x-hidden bg-gray-50">
-      {/* Hero — section is full-width for bg, inner div is constrained */}
+    <main className="min-h-screen overflow-x-hidden bg-gray-50"
+    style={{fontFamily:"instument serif"}}>
+      {/* Hero */}
       <section className="border-b border-gray-100 bg-white">
         <div
           className={`${CONTAINER} grid grid-cols-1 gap-10 py-16 lg:grid-cols-[1.1fr_0.9fr] lg:py-20`}

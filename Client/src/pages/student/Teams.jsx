@@ -461,7 +461,8 @@ function OpenTeamCard({ team, onJoin }) {
   const progress = Math.round((team.members / team.maxMembers) * 100);
 
   return (
-    <article className="rounded-3xl border border-gray-100 bg-gray-50 p-5">
+    <article className="rounded-3xl border border-gray-100 bg-gray-50 p-5"
+    style={{fontFamily:"instument serif"}}>
       <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-start">
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-3">

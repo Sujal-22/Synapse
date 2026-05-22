@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { ROUTES } from "../../utils/Constants";
 import { cn } from "../../utils/index";
 import { useAuth } from "../../context/useAuth";
@@ -17,7 +17,6 @@ const navItems = [
 ];
 
 export default function Header() {
-  const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
   const displayName = getDisplayName(profile, user);
   const username = getUsername(profile, user);
@@ -30,11 +29,12 @@ export default function Header() {
       console.error("Logout failed:", result.error);
       return;
     }
-    navigate(ROUTES.HOME, { replace: true });
+    window.location.href="/"
   }
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-100 border-b w-full border-gray-100 bg-white/90 backdrop-blur">
+    <header className="fixed left-0 right-0 top-0 z-100 border-b w-full border-gray-100 bg-white/90 backdrop-blur"
+    style={{fontFamily:"instument serif"}}>
       <div className="mx-auto flex h-16 max-w-340 items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to={ROUTES.HOME} className="flex items-center">
           <img
@@ -99,19 +99,9 @@ export default function Header() {
             </>
           ) : (
             <>
-              <Link
-                to={ROUTES.LOGIN}
-                className="rounded-xl px-4 py-2 text-sm font-semibold text-black hover:bg-gray-50"
-              >
-                Login
-              </Link>
+              <Link to={ROUTES.LOGIN} className="font-semibold text-black">Login</Link>
 
-              <Link
-                to={ROUTES.REGISTER}
-                className="rounded-xl bg-gray-900 px-5 py-3 text-sm font-semibold text-white hover:bg-black"
-              >
-                Sign up
-              </Link>
+                <Link to={ROUTES.REGISTER} className="font-semibold text-black">Sign up</Link>
             </>
           )}
         </div>

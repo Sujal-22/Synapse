@@ -49,12 +49,11 @@ export function AuthProvider({ children }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      const currentUser = session?.user ?? null;
 
-      setUser(currentUser);
+      setUser(session?.user?? null);
 
-      if (currentUser?.id) {
-        await fetchProfile(currentUser.id);
+      if (session?.user) {
+        await fetchProfile(session.user.id);
       } else {
         setProfile(null);
       }
@@ -63,7 +62,6 @@ export function AuthProvider({ children }) {
     });
 
     return () => {
-      mounted = false;
       subscription.unsubscribe();
     };
   }, []);
@@ -157,21 +155,34 @@ export function AuthProvider({ children }) {
   }
 
   async function signOut() {
-    console.log("Authcontext signOut called")
-    const { error } = await supabase.auth.signOut(); 
-    if (error) {
-      console.error("Supabase logout error:", error.message);
-      return {
-        error: getAuthError(error.message),
-      };
+    console.log("AuthContext signOut called");
+
+    try {
+      await supabase.auth.signOut();
+
+      const storageKeys = Object.keys(localStorage);
+
+      storageKeys.forEach((key) => {
+        if (
+          key.includes("supabase") ||
+          key.includes("sb-") ||
+          key.includes("auth-token")
+        ) {
+          localStorage.removeItem(key);
+        }
+      });
+
+      sessionStorage.clear();
+
+      setUser(null);
+      setProfile(null);
+      setLoading(false);
+
+      return { error: null };
+    } catch (error) {
+      console.error("Logout failed:", error);
+      return { error };
     }
-    setUser(null);
-    setProfile(null);
-    setLoading(false);
-    console.log("Logout completed");
-    return {
-      error: null,
-    };
   }
 
   async function updateProfile(updates) {

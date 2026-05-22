@@ -22,6 +22,8 @@ const RECENT_HACKATHONS = [
     tags: ["AI/ML", "Web Development", "Social Impact"],
     button: "View Hackathon",
     active: true,
+    prize: "₹50,000",
+    participants: 847,
   },
   {
     id: "web3-build-sprint",
@@ -34,6 +36,8 @@ const RECENT_HACKATHONS = [
     tags: ["Blockchain", "Open Source", "DevTools"],
     button: "View Hackathon",
     active: true,
+    prize: "₹75,000",
+    participants: 523,
   },
   {
     id: "healthtech-innovation",
@@ -46,6 +50,8 @@ const RECENT_HACKATHONS = [
     tags: ["HealthTech", "AI/ML", "Mobile"],
     button: "View Hackathon",
     active: false,
+    prize: "₹60,000",
+    participants: 214,
   },
 ];
 
@@ -76,65 +82,209 @@ const DEVELOPERS = [
   },
 ];
 
+const FEATURES = [
+  {
+    icon: "🧩",
+    title: "Smart Team Formation",
+    description:
+      "Find teammates based on complementary skills instead of random matching.",
+    accent: "from-indigo-500/10 to-blue-500/10",
+  },
+  {
+    icon: "📦",
+    title: "Project Submission",
+    description:
+      "Submit repo, demo, README, screenshots, and tech stack in one flow.",
+    accent: "from-emerald-500/10 to-teal-500/10",
+  },
+  {
+    icon: "🤖",
+    title: "AI Post-Hackathon Report",
+    description:
+      "Generate roadmap, bug checklist, ownership plan, and commercialisation path.",
+    accent: "from-violet-500/10 to-purple-500/10",
+  },
+];
+
 export default function Home() {
   return (
-    <div className="min-h-screen w-full overflow-x-hidden bg-white">
+    <div
+      className="min-h-screen w-full overflow-x-hidden bg-white"
+      style={{ fontFamily: "instrumment serif" }}
+    >
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 0.35; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.06); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -300% center; }
+          100% { background-position: 300% center; }
+        }
+        @keyframes float-y {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-10px); }
+        }
+        @keyframes ping-dot {
+          0%, 100% { transform: scale(1); opacity: 1; }
+          50% { transform: scale(1.9); opacity: 0; }
+        }
+        @keyframes fade-up {
+          from { opacity: 0; transform: translateY(18px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes ticker {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+
+        .glow-orb { animation: pulse-glow 4s ease-in-out infinite; }
+        .float-el { animation: float-y 5s ease-in-out infinite; }
+        .shimmer-text {
+          background: linear-gradient(90deg, #fff 30%, #a5b4fc 50%, #fff 70%);
+          background-size: 300% auto;
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          animation: shimmer 3.5s linear infinite;
+        }
+        .dot-ping { animation: ping-dot 1.4s ease-in-out infinite; }
+        .fade-up { animation: fade-up 0.6s ease-out forwards; }
+        .hack-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .hack-card:hover { transform: translateY(-6px); box-shadow: 0 24px 56px rgba(0,0,0,0.11); }
+        .dev-card { transition: transform 0.25s ease, box-shadow 0.25s ease; }
+        .dev-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.1); }
+        .ticker-inner { animation: ticker 28s linear infinite; white-space: nowrap; }
+        .feat-card { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .feat-card:hover { transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.07); }
+      `}</style>
+
       <Header />
 
-      {/* Hero */}
-      <section className="relative w-full overflow-hidden bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900">
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute -left-20 top-20 h-72 w-72 rounded-full bg-white/20 blur-3xl" />
-          <div className="absolute right-10 top-10 h-72 w-72 rounded-full bg-blue-400/20 blur-3xl" />
-        </div>
+      {/* ── Hero ── */}
+      <section
+        className="relative w-full overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, #0f0c29 0%, #1e1b4b 35%, #312e81 65%, #1e3a8a 100%)",
+        }}
+      >
+        {/* Ambient orbs */}
+        <div
+          className="glow-orb absolute -left-24 top-24 h-80 w-80 rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(99,102,241,0.35) 0%, transparent 70%)",
+          }}
+        />
+        <div
+          className="glow-orb absolute right-10 top-10 h-72 w-72 rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(59,130,246,0.28) 0%, transparent 70%)",
+            animationDelay: "2s",
+          }}
+        />
+        {/* Dot grid */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
 
-        <div className="relative mx-auto grid min-h-140 w-full max-w-340 grid-cols-1 items-center gap-10 px-4 py-20 sm:px-6 lg:grid-cols-2 lg:px-8">
+        <div className="relative mx-auto grid min-h-140 w-full max-w-340 grid-cols-1 items-center gap-12 px-6 py-20 sm:px-8 lg:grid-cols-2 lg:px-10">
+          {/* Left */}
           <div className="text-left">
-            <p className="mb-4 inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/80 ring-1 ring-white/10">
-              AI-powered hackathon management platform
-            </p>
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white/80 ring-1 ring-white/15 backdrop-blur-sm">
+              <span className="relative flex h-2 w-2">
+                <span className="dot-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+              </span>
+              AI-powered hackathon platform
+            </div>
 
-            <h1 className="max-w-3xl text-left text-5xl font-extrabold tracking-tight text-white sm:text-6xl">
-              Build teams <br></br>Submit projects<br></br> Continue after the
-              demo.
+            <h1 className="mt-6 text-1xl font-black tracking-tight leading-tight text-white sm:text-5xl">
+              Build teams.
+              <br />
+              <span className="shimmer-text">Ship projects.</span>
+              <br />
+              Continue after
+              <br />
+              the demo.
             </h1>
 
-            <p className="mt-6 max-w-2xl text-left text-lg leading-8 text-white/70">
+            <p className="mt-6 max-w-lg text-base leading-8 text-white/60">
               Synapse helps students explore hackathons, form balanced teams,
               submit projects, receive judging feedback, and generate an AI
               post-hackathon roadmap.
             </p>
 
-            <div className="mt-8 flex flex-wrap gap-4">
+            <div className="mt-8 flex flex-wrap gap-3">
               <Link
                 to={ROUTES.EXPLORE}
-                className="rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-gray-900 shadow-lg hover:bg-gray-100"
+                className="rounded-2xl bg-white px-6 py-3.5 text-sm font-bold text-gray-900 shadow-lg hover:bg-indigo-50 transition-colors"
               >
-                Explore Hackathons
+                Explore Hackathons →
               </Link>
-
               <Link
                 to={ROUTES.REGISTER}
-                className="rounded-2xl border border-white/20 px-6 py-3.5 text-sm font-bold text-white hover:bg-white"
+                className="rounded-2xl border border-white/20 bg-white/10 px-6 py-3.5 text-sm font-bold text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
               >
                 Create Account
               </Link>
             </div>
+
+            {/* Social proof */}
+            <div
+              className="mt-10 flex flex-wrap gap-6 text-xs text-white/40"
+              style={{ fontFamily: "'JetBrains Mono', monospace" }}
+            >
+              <span>
+                <span className="text-white/70 font-semibold">12,400+</span>{" "}
+                builders
+              </span>
+              <span>
+                <span className="text-white/70 font-semibold">₹1,25,000+</span>{" "}
+                prizes
+              </span>
+              <span>
+                <span className="text-white/70 font-semibold">38</span>{" "}
+                hackathons hosted
+              </span>
+            </div>
           </div>
 
-          <div className="rounded-4xl bg-white/10 p-2 space-y-4 shadow-2xl ring-1 ring-white/10">
+          {/* Right — Live preview panel */}
+          <div className="float-el rounded-4xl bg-white/10 p-2 shadow-2xl ring-1 ring-white/15 backdrop-blur-sm">
             <div className="rounded-3xl bg-white p-6">
-              <p className="text-sm font-bold text-synapse-700">
-                Live Platform Preview
-              </p>
+              <div className="flex items-center justify-between mb-1">
+                <p
+                  className="text-xs font-bold text-synapse-700 uppercase tracking-widest"
+                  style={{ fontFamily: "'JetBrains Mono', monospace" }}
+                >
+                  Live Platform Preview
+                </p>
+                <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600">
+                  <span className="relative flex h-2 w-2">
+                    <span className="dot-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+                  </span>
+                  Live
+                </span>
+              </div>
 
-              <h2 className="mt-2 text-2xl font-extrabold text-gray-900">
+              <h2 className="mt-2 text-2xl font-black text-gray-900">
                 Upcoming Hackathons
               </h2>
 
-              <div className="mt-6 space-y-4">
-                {RECENT_HACKATHONS.slice(0, 3).map((hackathon) => (
-                  <MiniHackathonCard key={hackathon.id} hackathon={hackathon} />
+              <div className="mt-5 space-y-3">
+                {RECENT_HACKATHONS.slice(0, 3).map((h) => (
+                  <MiniHackathonCard key={h.id} hackathon={h} />
                 ))}
               </div>
             </div>
@@ -142,102 +292,198 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features */}
-      <section className="mx-auto w-full max-w-340 px-4 py-16 sm:px-6 lg:px-8">
+      {/* ── Ticker ── */}
+      <div
+        className="overflow-hidden border-b border-indigo-900 py-2"
+        style={{ background: "#0f0c29" }}
+      >
+        <div
+          className="ticker-inner inline-flex gap-20 text-xs text-indigo-400"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+        >
+          {[...Array(2)].map((_, i) => (
+            <span key={i} className="inline-flex gap-20">
+              <span>🔴 LIVE · AI Impact Hack · 847 registered</span>
+              <span>⚡ Web3 Sprint · Applications open</span>
+              <span>🏆 ₹1,25,000 total prize pool this season</span>
+              <span>🚀 HealthTech Challenge dropping Jun 18</span>
+              <span>👥 12,400+ builders on Synapse</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Features ── */}
+      <section className="mx-auto w-full max-w-340 px-6 py-20 sm:px-8 lg:px-10">
+        <div className="mb-10 text-center">
+          <p
+            className="text-xs font-bold tracking-widest uppercase text-indigo-500"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            Platform Features
+          </p>
+          <h2 className="mt-3 text-4xl font-black text-gray-900 sm:text-5xl">
+            Everything you need to ship.
+          </h2>
+        </div>
+
         <div className="grid gap-6 md:grid-cols-3">
-          <FeatureCard
-            title="Smart Team Formation"
-            description="Find teammates based on complementary skills instead of random matching."
-          />
-          <FeatureCard
-            title="Project Submission"
-            description="Submit repo, demo, README, screenshots, and tech stack in one flow."
-          />
-          <FeatureCard
-            title="AI Post-Hackathon Report"
-            description="Generate roadmap, bug checklist, ownership plan, and commercialisation path."
-          />
+          {FEATURES.map((f) => (
+            <FeatureCard key={f.title} feature={f} />
+          ))}
         </div>
       </section>
 
-      {/* Recent Hackathons */}
+      {/* ── Recent Hackathons ── */}
       <section className="w-full bg-gray-50">
-        <div className="mx-auto w-full max-w-340 px-4 py-20 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-340 px-6 py-20 sm:px-8 lg:px-10">
           <div className="mb-10 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
-              <p className="text-sm font-black uppercase tracking-[0.2em] text-synapse-700">
+              <p
+                className="text-xs font-bold uppercase tracking-widest text-synapse-700"
+                style={{ fontFamily: "'JetBrains Mono', monospace" }}
+              >
                 Recent Hackathons
               </p>
-              <h2 className="mt-3 max-w-3xl text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
-                Discover active events built for modern developers.
+              <h2 className="mt-3 max-w-2xl text-4xl font-black tracking-tight text-gray-900 sm:text-3xl">
+                Active events built for modern developers.
               </h2>
             </div>
-
             <Link
               to={ROUTES.EXPLORE}
-              className="w-fit rounded-2xl bg-gray-900 px-6 py-3 text-sm font-bold text-white hover:bg-black"
+              className="w-fit rounded-2xl bg-gray-900 px-6 py-3 text-sm font-bold text-white hover:bg-black transition-colors"
             >
-              View All Hackathons
+              View All →
             </Link>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
-            {RECENT_HACKATHONS.map((hackathon) => (
-              <RecentHackathonCard key={hackathon.id} hackathon={hackathon} />
+            {RECENT_HACKATHONS.map((h) => (
+              <RecentHackathonCard key={h.id} hackathon={h} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Developer Spotlight */}
-      <section className="mx-auto w-full max-w-340 px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mb-10">
-          <p className="text-sm font-black uppercase tracking-[0.2em] text-synapse-700">
+      {/* ── Builder Spotlight ── */}
+      <section className="mx-auto w-full max-w-340 px-3 py-10 sm:px-8 lg:px-10">
+        <div className="mb-5">
+          <p
+            className="text-xs font-bold uppercase tracking-widest text-synapse-700"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
             Builder Spotlight
           </p>
-          <h2 className="mt-3 max-w-3xl text-4xl font-black tracking-tight text-gray-900 sm:text-5xl">
+          <h2 className="mt-3 max-w-2xl text-4xl font-black tracking-tight text-gray-900 sm:text-3xl">
             Meet developers building with Synapse.
           </h2>
-          <p className="mt-4 max-w-2xl text-lg leading-8 text-gray-500">
-            Highlight skilled participants, mentors, and builders with social
-            profiles and technical expertise.
+          <p className="mt-2 max-w-xl text-base leading-8 text-gray-500">
+            Skilled participants, mentors, and builders with technical
+            expertise.
           </p>
         </div>
 
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-          {DEVELOPERS.map((developer) => (
-            <DeveloperCard key={developer.name} developer={developer} />
+          {DEVELOPERS.map((d) => (
+            <DeveloperCard key={d.name} developer={d} />
           ))}
         </div>
       </section>
 
-      {/* Footer */}
+      {/* ── CTA Banner ── */}
+      <section
+        className="relative overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, #0f0c29 0%, #1e1b4b 40%, #1e3a8a 100%)",
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
+          }}
+        />
+        <div
+          className="glow-orb absolute right-0 bottom-0 w-96 h-96 rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(99,102,241,0.25) 0%, transparent 70%)",
+          }}
+        />
+        <div className="relative mx-auto w-full max-w-340 px-6 py-10 sm:px-8 lg:px-10 text-center text-white">
+          <p
+            className="text-xs font-bold tracking-widest uppercase text-indigo-400"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            Ready to build?
+          </p>
+          <h2 className="mt-4 text-5xl font-black leading-tight sm:text-5xl">
+            Launch your Hackathon
+            <br />
+            <span className="shimmer-text">Starts Here</span>
+          </h2>
+          <p className="mt-5 text-base pb-3 text-white/55  leading-10">
+            Designed for organisers who want more than registrations — Synapse
+            helps you build a thriving developer ecosystem.
+          </p>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              to={ROUTES.HOST_HACKATHON}
+              className="rounded-2xl bg-white px-8 py-4 text-sm font-bold text-gray-900 hover:bg-indigo-50 transition-colors shadow-lg"
+            >
+              Launch Hackathon →
+            </Link>
+            <Link
+              to={ROUTES.EXPLORE}
+              className="rounded-2xl border border-white/20 bg-white/10 px-8 py-4 text-sm font-bold text-white hover:bg-white/20 transition-colors backdrop-blur-sm"
+            >
+              Browse Hackathons
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
 }
 
+/* ── Sub-components ── */
+
 function MiniHackathonCard({ hackathon }) {
   return (
-    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
+    <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 transition hover:bg-indigo-50/40">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="font-bold text-gray-900">{hackathon.title}</h3>
-          <p className="mt-1 text-sm text-gray-400">{hackathon.date}</p>
-
-          <div className="mt-2 flex flex-wrap gap-2">
+        <div className="min-w-0">
+          <h3 className="font-bold text-gray-900 truncate">
+            {hackathon.title}
+          </h3>
+          <p
+            className="mt-0.5 text-xs text-gray-400"
+          >
+            {hackathon.date}
+          </p>
+          <div className="mt-2 flex flex-wrap gap-1.5">
             {hackathon.tags.slice(0, 2).map((tag) => (
               <span
                 key={tag}
-                className="rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-500"
+                className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-gray-500 ring-1 ring-gray-100"
               >
                 {tag}
               </span>
             ))}
           </div>
         </div>
-
-        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700">
+        <span
+          className={`shrink-0 rounded-full px-3 py-1 text-xs font-bold ${
+            hackathon.active
+              ? "bg-emerald-50 text-emerald-700"
+              : "bg-gray-100 text-gray-500"
+          }`}
+        >
           {hackathon.status}
         </span>
       </div>
@@ -245,62 +491,121 @@ function MiniHackathonCard({ hackathon }) {
   );
 }
 
-function RecentHackathonCard({ hackathon }) {
+function FeatureCard({ feature }) {
   return (
-    <article className="flex min-h-130 flex-col rounded-4xl border border-gray-200 bg-white p-8 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
-      <div>
-        <h3 className="text-4xl font-black leading-tight tracking-tight text-gray-900">
-          {hackathon.title}
-        </h3>
+    <div
+      className={`feat-card rounded-3xl border border-gray-100 bg-white p-7 shadow-sm`}
+    >
+      <div
+        className={`inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br ${feature.accent} text-2xl mb-5`}
+      >
+        {feature.icon}
+      </div>
+      <h3 className="text-lg font-black text-gray-900">{feature.title}</h3>
+      <p className="mt-2 text-sm leading-6 text-gray-500">
+        {feature.description}
+      </p>
+    </div>
+  );
+}
 
-        <p className="mt-5 text-lg leading-8 text-gray-600">
-          {hackathon.description}
+function RecentHackathonCard({ hackathon }) {
+  const fillPct = Math.min((hackathon.participants / 1000) * 100, 100);
+  return (
+    <article className="hack-card flex min-h-130 flex-col rounded-4xl border border-gray-200 bg-white shadow-sm overflow-hidden">
+      {/* Card top band */}
+      <div
+        className="relative h-28 p-5 text-white overflow-hidden"
+        style={{
+          background:
+            "linear-gradient(135deg, #1e1b4b 0%, #312e81 55%, #1e3a8a 100%)",
+        }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none opacity-10"
+          style={{
+            backgroundImage:
+              "radial-gradient(rgba(255,255,255,0.4) 1px, transparent 1px)",
+            backgroundSize: "18px 18px",
+          }}
+        />
+        <div className="relative flex items-center justify-between">
+          <span
+            className={`rounded-full px-3 py-1 text-xs font-bold ${
+              hackathon.active
+                ? "bg-emerald-400/20 text-emerald-200 ring-1 ring-emerald-300/30"
+                : "bg-white/10 text-white/60 ring-1 ring-white/15"
+            }`}
+          >
+            {hackathon.status}
+          </span>
+          <span className="rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-white/80 ring-1 ring-white/15">
+            {hackathon.prize}
+          </span>
+        </div>
+        <p
+          className="relative mt-3 text-xs text-white/45"
+          style={{ fontFamily: "'JetBrains Mono', monospace" }}
+        >
+          {hackathon.participants.toLocaleString()} registered
         </p>
+      </div>
 
-        <div className="mt-6 flex flex-wrap gap-2">
+      <div className="flex flex-1 flex-col gap-5 p-6">
+        <div>
+          <h3 className="text-2xl font-black leading-tight tracking-tight text-gray-900">
+            {hackathon.title}
+          </h3>
+          <p className="mt-3 text-sm leading-7 text-gray-600">
+            {hackathon.description}
+          </p>
+        </div>
+
+        {/* Fill bar */}
+        <div>
+          <div className="mb-1.5 flex justify-between text-xs text-gray-400">
+            <span>Spots filling</span>
+            <span className="font-bold text-gray-700">
+              {hackathon.participants}/1000
+            </span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-gray-100">
+            <div
+              className="h-full rounded-full bg-indigo-600"
+              style={{
+                width: `${fillPct}%`,
+                transition: "width 1.2s cubic-bezier(.4,0,.2,1)",
+              }}
+            />
+          </div>
+        </div>
+
+        <div className="flex flex-wrap gap-2">
           {hackathon.tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full bg-synapse-50 px-3 py-1.5 text-xs font-bold text-synapse-700"
+              className="rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700"
             >
               {tag}
             </span>
           ))}
         </div>
-      </div>
 
-      <div className="mt-auto pt-10">
-        <div className="border-l-4 border-synapse-600 pl-5">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">
-            Runs from
-          </p>
-          <p className="mt-1 text-xl font-black text-gray-900">
-            {hackathon.date}
-          </p>
-
-          <p className="mt-5 text-xs font-black uppercase tracking-[0.2em] text-gray-400">
-            Happening
-          </p>
-          <p className="mt-1 text-xl font-black text-gray-900">
-            {hackathon.mode}
-          </p>
-        </div>
-
-        <div className="mt-6 rounded-2xl bg-gray-50 p-5">
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-gray-400">
-            Status
-          </p>
-          <p className="mt-1 text-lg font-black text-gray-900">
-            {hackathon.status}
+        <div className="mt-auto border-l-4 border-indigo-600 pl-4">
+          <p
+            className="text-xs font-bold uppercase tracking-widest text-gray-400"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            {hackathon.date} · {hackathon.mode}
           </p>
         </div>
 
         <Link
           to={`/hackathon/${hackathon.id}`}
-          className={`mt-6 block rounded-2xl px-5 py-4 text-center text-lg font-black transition ${
+          className={`block rounded-2xl px-5 py-3.5 text-center text-sm font-bold transition-colors ${
             hackathon.active
-              ? "bg-synapse-700 text-white hover:bg-synapse-800"
-              : "bg-synapse-200 text-white"
+              ? "bg-indigo-950 text-white hover:bg-indigo-900"
+              : "bg-gray-100 text-gray-400 cursor-not-allowed"
           }`}
         >
           {hackathon.button}
@@ -312,23 +617,30 @@ function RecentHackathonCard({ hackathon }) {
 
 function DeveloperCard({ developer }) {
   return (
-    <article className="overflow-hidden rounded-4xl border border-gray-100 bg-white shadow-sm">
+    <article className="dev-card overflow-hidden rounded-4xl border border-gray-100 bg-white shadow-sm">
       <div className="aspect-4/5 w-full overflow-hidden bg-gray-100">
         <img
           src={developer.image}
           alt={developer.name}
-          className="h-full w-full object-cover object-top"
+          className="h-full w-full object-cover object-top transition-transform duration-500 hover:scale-105"
         />
       </div>
-
       <div className="p-5">
-        <h3 className="text-xl font-black text-gray-900">{developer.name}</h3>
-
-        <p className="mt-1 text-sm font-semibold text-gray-400">
+        <h3 className="text-lg font-black text-gray-900">{developer.name}</h3>
+        <p className="mt-0.5 text-sm font-semibold text-gray-400">
           {developer.role}
         </p>
-
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {developer.skills.map((s) => (
+            <span
+              key={s}
+              className="rounded-full bg-indigo-50 px-2.5 py-0.5 text-xs font-semibold text-indigo-700"
+            >
+              {s}
+            </span>
+          ))}
+        </div>
+        <div className="mt-4 flex items-center gap-2">
           <SocialButton label="Instagram" icon={instagramIcon} />
           <SocialButton label="X" icon={xIcon} />
           <SocialButton label="GitHub" icon={githubIcon} />
@@ -345,124 +657,73 @@ function SocialButton({ label, icon }) {
       type="button"
       aria-label={label}
       title={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
+      className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-indigo-100"
     >
       <img src={icon} alt={label} className="h-5 w-5 object-contain" />
     </button>
   );
 }
 
-function FeatureCard({ title, description }) {
-  return (
-    <div className="rounded-3xl border border-gray-100 bg-white p-6 shadow-sm">
-      <h3 className="text-lg font-extrabold text-gray-900">{title}</h3>
-      <p className="mt-3 text-sm leading-6 text-gray-500">{description}</p>
-    </div>
-  );
-}
-
 function Footer() {
   return (
-    <footer className="overflow-hidden border-t border-gray-200 bg-[#f3f8f8]">
-      <div className="mx-auto grid w-full max-w-340 gap-12 px-4 py-16 sm:px-6 lg:grid-cols-[1.3fr_1fr] lg:px-8">
-        <div>
-          <h2 className="max-w-2xl text-5xl font-black leading-tight tracking-tight text-gray-900 sm:text-6xl">
-            We love <span className="text-synapse-500">software</span>
-            <br />
-            and the <span className="text-orange-300">people</span> who
-            <br />
-            build it.
-          </h2>
-
-          <div className="mt-16 border-t border-gray-300 pt-3">
+    <footer className="border-t border-gray-200 bg-white">
+      <div className="mx-auto  max-w-350 px-6 py-16 sm:px-8 lg:px-10">
+        {/* Top row */}
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between">
+          {/* Brand */}
+          <div className="max-w-xs">
             <Link
               to={ROUTES.HOME}
-              className="text-4xl font-black text-synapse-600"
+              className="text-5xl font-black text-synapse-700"
             >
               Synapse
             </Link>
-
-            <div className="mt-6 flex items-center gap-3 ">
+            <p className="mt-3 text-sm leading-normal text-gray-500">
+              The AI-powered hackathon platform for students and builders.
+            </p>
+            <div className="mt-5 flex items-center gap-2">
               <FooterSocial label="X" icon={xIcon} />
               <FooterSocial label="Instagram" icon={instagramIcon} />
               <FooterSocial label="GitHub" icon={githubIcon} />
               <FooterSocial label="LinkedIn" icon={linkedinIcon} />
             </div>
+          </div>
 
-            <p className="mt-6 text-sm text-gray-600">
-              © 2026, Synapse Hackathon Ecosystem
-            </p>
+          {/* Nav links */}
+          <div className="grid grid-cols-2 gap-x-16 gap-y-8 sm:grid-cols-3 lg:grid-cols-5">
+            <FooterLink label="Explore" to={ROUTES.EXPLORE} />
+            <FooterLink label="About" to="#" />
+            <FooterLink label="Support" to="#" />
+            <FooterLink label="Terms" to="#" />
+            <FooterLink label="Privacy" to="#" />
           </div>
         </div>
 
-        <div className="grid gap-10 sm:grid-cols-3">
-          <FooterColumn
-            title="Community"
-            links={[
-              { label: "Organize a hackathon", to: ROUTES.HOST_HACKATHON },
-              { label: "Explore hackathons", to: ROUTES.EXPLORE },
-              "Code of Conduct",
-              "Brand Assets",
-              "Documentation",
-            ]}
-          />
-
-          <FooterColumn
-            title="Company"
-            links={[
-              "About",
-              "Blog",
-              "Careers",
-              "Changelog",
-              "Privacy",
-              "Terms",
-            ]}
-          />
-
-          <FooterColumn
-            title="Support"
-            links={["Guide", "Status", "Contact us"]}
-          />
+        {/* Bottom bar */}
+        <div className="mt-8 border-t border-gray-100 pt-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-gray-400">
+            © 2026 Synapse Hackathon Ecosystem. All rights reserved.
+          </p>
+          <p
+            className="text-xs text-gray-300"
+            style={{ fontFamily: "'JetBrains Mono', monospace" }}
+          >
+            v1.0.0 · Built for builders
+          </p>
         </div>
       </div>
     </footer>
   );
 }
 
-function FooterColumn({ title, links }) {
+function FooterLink({ label, to }) {
   return (
-    <div>
-      <h3 className="text-sm font-black uppercase tracking-[0.2em] text-gray-400">
-        {title}
-      </h3>
-
-      <ul className="mt-6 space-y-4">
-        {links.map((item) => {
-          const link =
-            typeof item === "string" ? { label: item, href: "#" } : item;
-
-          return (
-            <li key={link.label}>
-              {link.to ? (
-                <Link
-                  to={link.to}
-                  className="text-lg font-medium text-gray-800 hover:text-synapse-700"
-                >
-                  {link.label}
-                </Link>
-              ) : (
-                <a
-                  href={link.href || "#"}
-                  className="text-lg font-medium text-gray-800 hover:text-synapse-700"
-                >
-                  {link.label}
-                </a>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    </div>
+    <Link
+      to={to}
+      className="text-sm font-bold text-gray-700 hover:text-synapse-700 transition-colors"
+    >
+      {label}
+    </Link>
   );
 }
 
@@ -472,7 +733,7 @@ function FooterSocial({ label, icon }) {
       type="button"
       aria-label={label}
       title={label}
-      className="flex h-10 w-10 items-center justify-center rounded-full bg-gray-100 transition hover:bg-gray-200"
+      className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 transition hover:bg-indigo-100"
     >
       <img src={icon} alt={label} className="h-5 w-5 object-contain" />
     </button>

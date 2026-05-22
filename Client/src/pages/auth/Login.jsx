@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { ROUTES } from "../../utils/Constants";
-import logo from "../../assets/synapseLogo/synapseLogo.png";
+import logo from "../../assets/synapseLogo/synapseLogoWhite.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -81,7 +81,8 @@ export default function Login() {
   }
 
   return (
-    <main className="min-h-screen w-full bg-linear-to-br from-slate-50 via-white to-synapse-50 px-4 py-8">
+    <main className="min-h-screen w-full bg-linear-to-br from-slate-50 via-white to-synapse-50 px-4 py-8"
+    style={{fontFamily:"instrument serif"}}>
       <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl overflow-hidden rounded-4xl bg-white shadow-2xl ring-1 ring-black/5 lg:grid-cols-[1.05fr_0.95fr]">
         {/* Left visual panel */}
         <section className="relative hidden overflow-hidden bg-linear-to-br from-indigo-950 via-synapse-800 to-blue-900 lg:block">

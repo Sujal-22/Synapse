@@ -165,7 +165,7 @@ export default function Profile() {
     8;
 
   return (
-    <main className="min-h-screen w-full bg-gray-50">
+    <main className="min-h-screen w-full bg-gray-50" style={{fontFamily:"instrument serif"}}>
       {/* Profile Hero */}
       <section className="border-b border-gray-100 bg-white">
         <div className="mx-auto w-full max-w-340 px-6 py-12 sm:px-8 lg:px-10">

@@ -253,7 +253,8 @@ async function handleBookSession(mentor) {
 }
 
   return (
-    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50">
+    <main className="min-h-screen w-full max-w-full overflow-x-hidden bg-gray-50"
+    style={{fontFamily:"instument serif"}}>
       {/* Hero */}
       <section className="border-b border-gray-100 bg-white">
         <div className="mx-auto w-full max-w-340 px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
